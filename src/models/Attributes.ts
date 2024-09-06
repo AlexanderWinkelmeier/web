@@ -1,6 +1,6 @@
 import { UserProps } from './User';
 
-export class Attributes<T extends object> {
+export class Attributes<T> {
   constructor(private data: T) {}
 
   // "keyof T" -->  "id" |" name" | "age" bei T = {id: number, name: string, age: number}
