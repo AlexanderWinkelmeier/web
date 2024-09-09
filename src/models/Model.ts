@@ -1,9 +1,9 @@
 import { AxiosPromise, AxiosResponse } from 'axios';
 
 interface ModelAttributes<T> {
-  get<K extends keyof T>(key: K): T[K];
-  set(update: T): void;
+  set(value: T): void;
   getAll(): T;
+  get<K extends keyof T>(key: K): T[K];
 }
 
 interface Sync<T> {
@@ -16,7 +16,7 @@ interface Events {
   trigger(eventName: string): void;
 }
 
-interface HasId {
+export interface HasId {
   id?: number;
 }
 
@@ -27,25 +27,17 @@ export class Model<T extends HasId> {
     private sync: Sync<T>
   ) {}
 
-  // passing through the on-method, the trigger-method to events and the get-method to attributes; just referencing, not calling!
-  get on() {
-    return this.events.on;
-  }
-  get trigger() {
-    return this.events.trigger;
-  }
+  on = this.events.on;
+  trigger = this.events.trigger;
+  get = this.attributes.get;
 
-  get get() {
-    return this.attributes.get;
-  }
-  //
   set(update: T): void {
     this.attributes.set(update);
     this.events.trigger('change');
   }
 
   fetch(): void {
-    const id = this.attributes.get('id');
+    const id = this.get('id');
 
     if (typeof id !== 'number') {
       throw new Error('Cannot fetch without an id');
